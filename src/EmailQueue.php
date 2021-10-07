@@ -15,7 +15,6 @@ class EmailQueue{
        *
        * - subject : Email's subject
        * - send_at : date time sting representing the time this email should be sent at (in UTC)
-       * - format: Type of template to use (html, text or both)
        *
        * @return bool
        */

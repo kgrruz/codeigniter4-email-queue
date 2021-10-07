@@ -22,7 +22,6 @@ class EmailQueueModel extends Model
         'from_email',
         'subject',
         'message',
-        'format',
         'sent',
         'send_at',
         'attempts',
@@ -35,19 +34,13 @@ class EmailQueueModel extends Model
     /**
      * Stores a new email message in the queue.
      *
-     * @param mixed $to      email or array of emails as recipients
+     * @param mixed $to      email recipient
+     * @param string $subject   email subject
      * @param array $data    associative array of variables to be passed to the email template
      * @param array $options list of options for email sending. Possible keys:
      *
-     * - subject : Email's subject
-     * - format: Type of template to use (html, text or both)
-
-     *
-     * @throws \Exception any exception raised in transactional callback
-     * @throws \LengthException If `template` option length is greater than maximum allowed length
-     * @return bool
      */
-    public function enqueue($to, array $data, array $options = []): bool
+    public function enqueue($to, string $subject,array $data): bool
     {
 
         helper('setting');
@@ -58,7 +51,6 @@ class EmailQueueModel extends Model
           'from_name'=>setting('Email.fromName'),
           'from_email'=>setting('Email.fromEmail'),
           'message'=>$data['message'],
-          'format'=>$options['format'],
           'created_at' => new Time('now'),
           'attempts' => 0,
           'sent' => 0
@@ -72,7 +64,6 @@ class EmailQueueModel extends Model
      * Returns a list of queued emails that needs to be sent.
      *
      * @param int|string $size number of unset emails to return
-     * @throws \Exception any exception raised in transactional callback
      * @return array list of unsent emails
      */
     public function getBatch($size = 10): array

@@ -39,8 +39,8 @@ class QueueProcess extends BaseCommand
               $config['mailpath'] = '/usr/sbin/sendmail';
             }
 
-            $config['charset']  = 'iso-8859-1';
             $config['wordWrap'] = true;
+            $config['mailType'] = 'html';
 
             if(setting('Email.protocol') == 'smtp'){
 

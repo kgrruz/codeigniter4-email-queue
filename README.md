@@ -5,36 +5,65 @@ This package provides an interface for creating emails on the fly and
 store them in a queue to be processed later by an offline worker using a
 Codeigniter4 CLI command.
 
-## Installation ##
+## Requirements ##
+- Codeigniter 4.x
+- codeigniter4/settings
 
+## Installation ##
 
 ```sh
 composer require kgrruz/codeigniter4-email-queue
 ```
 
+### run migrations command:
 
+```sh
 php spark migrate -n EmailQueue
-
+```
 
 ## Usage
+
+You must set these configuration values using the codeigniter4/settings package before using it:
+
+```sh
+    setting('Email.fromEmail')
+    setting('Email.fromName')
+    setting('Email.protocol')
+```  
+
+In case of SMTP protocol:
+
+```sh
+    setting('Email.SMTPHost')
+    setting('Email.SMTPPort')
+    setting('Email.SMTPUser')
+    setting('Email.SMTPPass')
+    setting('Email.SMTPCrypto')
+    setting('Email.SMTPTimeout')
+    setting('Email.SMTPKeepAlive')
+```    
+
+Default email settings:
+
+```sh
+    $config['mailpath'] = '/usr/sbin/sendmail';
+    $config['wordWrap'] = true;
+    $config['mailType'] = 'html';
+```  
 
 Whenever you need to send an email, use the EmailQueue model to create
 and queue a new one by storing the correct data:
 
     use EmailQueue\EmailQueue;
-    EmailQueue::enqueue($to, $data, $options);
+    EmailQueue::enqueue($to, $subject, $data);
 
 `enqueue` method receives 3 arguments:
 
-- First argument is a string or array of email addresses that will be treated as recipients.
-- Second arguments is an array of view variables to be passed to the
+- First argument is a string of email addresses that will be treated as recipients.
+- Second argument is an string with the email subject
+- Third arguments is an array of view variables to be passed to the
   email template
-- Third arguments is an array of options, possible options are
- * `subject`: Email's subject
- * `send_at`: date time sting representing the time this email should be sent at (in UTC)
- * `format`: Type of template to use (html, text or both)
- * `from_name`: String with from name. Must be supplied together with `from_email`.
- * `from_email`: String with from email. Must be supplied together with `from_name`.
+ * `message`: Email's body text/html
 
 
 ### Sending emails
@@ -46,6 +75,12 @@ limit the number of emails processed
 
 You can configure this command to be run under a cron or any other tool
 you wish to use.
+
+# Todo
+
+- Attachments
+- Priority
+- BCC,CC
 
 # Contributing
 

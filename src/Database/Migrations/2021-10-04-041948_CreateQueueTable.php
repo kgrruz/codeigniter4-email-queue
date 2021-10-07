@@ -35,10 +35,6 @@ class CreateQueueTable extends Migration
             'message'       => [
                 'type'       => 'TEXT',
             ],
-            'format'       => [
-                'type'       => 'varchar',
-                'constraint' => 5,
-            ],
             'attempts' => [
                 'type' => 'INT',
                 'constraint' => 2,
