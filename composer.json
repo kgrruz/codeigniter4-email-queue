@@ -1,6 +1,5 @@
 {
     "name": "kgrruz/codeigniter4-email-queue",
-    "version" : "1.0.0",
     "type": "library",
   	"description": "Queue, preview and and send emails stored in the database",
   	"keywords": [
