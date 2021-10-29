@@ -23,7 +23,7 @@ class EmailQueueModel extends Model
         'subject',
         'message',
         'sent',
-        'send_at',
+        'sent_at',
         'attempts',
         'attachments',
         'created_at'
@@ -37,7 +37,6 @@ class EmailQueueModel extends Model
      * @param mixed $to      email recipient
      * @param string $subject   email subject
      * @param array $data    associative array of variables to be passed to the email template
-     * @param array $options list of options for email sending. Possible keys:
      *
      */
     public function enqueue($to, string $subject,array $data): bool
@@ -47,7 +46,7 @@ class EmailQueueModel extends Model
 
         $defaults = [
           'email' => $to,
-          'subject' => $options['subject'],
+          'subject' => $subject,
           'from_name'=>setting('Email.fromName'),
           'from_email'=>setting('Email.fromEmail'),
           'message'=>$data['message'],
@@ -63,17 +62,18 @@ class EmailQueueModel extends Model
     /**
      * Returns a list of queued emails that needs to be sent.
      *
+     * @param int $status sent or not
      * @param int|string $size number of unset emails to return
      * @return array list of unsent emails
      */
-    public function getBatch($size = 10): array
+    public function getBatch($status = '0,1', $size = 100): array
     {
 
       return $this->asArray()
-                 ->where('sent', 0)
+                 ->whereIn('sent', $status)
                  ->where('attempts <=', 3)
                  ->limit($size)
-                 ->orderBy('created_at','ASC')
+                 ->orderBy('created_at','DESC')
                  ->findAll();
 
     }
