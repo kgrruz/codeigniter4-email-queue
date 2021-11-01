@@ -25,7 +25,6 @@ class EmailQueueModel extends Model
         'sent',
         'sent_at',
         'attempts',
-        'attachments',
         'created_at'
     ];
 
@@ -34,7 +33,7 @@ class EmailQueueModel extends Model
     /**
      * Stores a new email message in the queue.
      *
-     * @param mixed $to      email recipient
+     * @param string $to      email recipient
      * @param string $subject   email subject
      * @param array $data    associative array of variables to be passed to the email template
      *
@@ -70,7 +69,7 @@ class EmailQueueModel extends Model
     {
 
       return $this->asArray()
-                 ->whereIn('sent', $status)
+                 ->whereIn('sent', explode(',',$status))
                  ->where('attempts <=', 3)
                  ->limit($size)
                  ->orderBy('created_at','DESC')
