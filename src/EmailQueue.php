@@ -19,18 +19,37 @@ class EmailQueue{
        */
   public static function enqueue($to, string $subject, array $data)
      {
-         $queue = new EmailQueueModel();
+          $validation =  \Config\Services::validation();
 
-         return $queue->enqueue($to, $subject, $data);
+          if($validation->check($to,'required|valid_email') && $validation->check($subject,'required')){
+
+               $queue = new EmailQueueModel();
+
+               return $queue->enqueue($to, $subject, $data);
+
+         }else{
+
+           return redirect()->back()->with('error', $validation->getErrors());
+
+         }
      }
 
+     /**
+          * Process queue.
+          *
+          * @param int $limit      numer of email to process
+          *
+          * @return bool
+          */
   public static function process($limit = 10)
      {
 
        $queue = new EmailQueueModel();
        $emails = $queue->getBatch(0,$limit);
 
-       if (! $query->num_rows()) {
+       // If the query returned no rows, the queue is empty, so it has been
+      // processed successfully.
+       if (count($emails) < 1) {
             return true;
         }
 
@@ -38,6 +57,7 @@ class EmailQueue{
 
        $totalSteps = count($emails);
        $currStep   = 0;
+       $success = true;
 
        if(is_cli()){
          CLI::write('Emails to send: '.$totalSteps, 'green');
@@ -80,30 +100,35 @@ class EmailQueue{
 
              if(is_cli()){
 
-               CLI::write('Cold not send email to: '.$e['email'], 'light_red');
+               CLI::write('Could not send email to: '.$e['email'], 'light_red');
                CLI::newLine();
 
            }
 
-             $update_data = array(
+             $updateData = array(
                'attempts'=>$e['attempts']+1,
              );
 
            }else{
 
-             $update_data = array(
+             $updateData = array(
                'sent_at'=>new Time('now'),
                'sent'=>1,
                'attempts'=>$e['attempts']+1,
              );
+
+            $success = false;
          }
 
-         $queue->update($e['id'],$update_data);
+         $queue->update($e['id'],$updateData);
 
           if(is_cli()){
             CLI::showProgress($currStep++, $totalSteps);
-          }
+        }
 
        }
+
+       return $success;
+
      }
 }
