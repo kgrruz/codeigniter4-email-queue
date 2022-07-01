@@ -41,7 +41,7 @@ class CreateQueueTable extends Migration
                 'null' => false,
             ],
             'sent' => [
-                'type' => 'boolean',
+                'type' => 'tinyint',
                 'constraint' => 1,
                 'default' => 0,
             ],
