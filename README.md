@@ -23,7 +23,7 @@ php spark migrate -n EmailQueue
 
 ## Usage
 
-You must set these configuration values using the codeigniter4/settings package before using it:
+You must set these configuration in the **app/Config/Email.php** or set these values using the [codeigniter4/settings](https://github.com/codeigniter4/settings) package before using it:
 
 ```sh
     setting('Email.fromEmail')
@@ -64,6 +64,8 @@ and queue a new one by storing the correct data:
 - Third arguments is an array of view variables to be passed to the
   email template
  * `message`: Email's body text/html
+ 
+    $data['message'] = "hello world message";
 
 
 ### Sending emails
