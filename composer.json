@@ -19,7 +19,7 @@
   		}
   	],
   	"require": {
-          "php": "^7.3 || ^8.0",
+          "php": "^7.4 || ^8.0",
           "codeigniter4/settings": "^2.0"
       },
       "autoload": {
@@ -31,6 +31,7 @@
 		]
       },
       "require-dev": {
+        "codeigniter4/codeigniter4": "dev-develop",
         "phpunit/phpunit": "^9.5"
     },
     "scripts": {
