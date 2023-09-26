@@ -21,6 +21,7 @@ class EmailQueueModel extends Model
         'from_name',
         'from_email',
         'subject',
+        'attachs',
         'message',
         'sent',
         'sent_at',
@@ -38,7 +39,7 @@ class EmailQueueModel extends Model
      * @param array $data    associative array of variables to be passed to the email template
      *
      */
-    public function enqueue($to, string $subject,array $data): bool
+    public function enqueue($to, string $subject, array $attachs, array $data): bool
     {
 
         helper('setting');
@@ -46,9 +47,10 @@ class EmailQueueModel extends Model
         $defaults = [
           'email' => $to,
           'subject' => $subject,
-          'from_name'=>setting('Email.fromName'),
-          'from_email'=>setting('Email.fromEmail'),
-          'message'=>$data['message'],
+          'from_name' => setting('Email.fromName'),
+          'from_email' => setting('Email.fromEmail'),
+          'attachs' => implode(",", $attachs),
+          'message' => $data['message'],
           'created_at' => new Time('now'),
           'attempts' => 0,
           'sent' => 0

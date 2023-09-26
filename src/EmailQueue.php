@@ -17,7 +17,7 @@ class EmailQueue{
        *
        * @return bool
        */
-  public static function enqueue($to, string $subject, array $data)
+  public static function enqueue($to, string $subject, array $attachs, array $data)
      {
           $validation =  \Config\Services::validation();
 
@@ -25,7 +25,7 @@ class EmailQueue{
 
                $queue = new EmailQueueModel();
 
-               return $queue->enqueue($to, $subject, $data);
+               return $queue->enqueue($to, $subject, $attachs, $data);
 
          }else{
 
@@ -71,9 +71,12 @@ class EmailQueue{
          $config['mailpath'] = '/usr/sbin/sendmail';
        }
 
+       $config['userAgent'] = 'L2JPREMIUM MAIL';
        $config['wordWrap'] = true;
        $config['mailType'] = 'html';
-
+       $config['validate'] = true;
+       $config['newline'] = "\r\n";
+       $config['CRLF'] = "\r\n";
        if(setting('Email.protocol') == 'smtp'){
 
            $config['SMTPHost'] = setting('Email.SMTPHost');
@@ -96,15 +99,25 @@ class EmailQueue{
            $email->setSubject($e['subject']);
            $email->setMessage($e['message']);
 
-           if (!$email->send()){
+           foreach(explode(",", $e['attachs']) as $a){
+              $email->attach($a);
+           }
+
+           if(is_cli()){
+            CLI::showProgress($currStep++, $totalSteps);
+        }
+
+           if (!$email->send(false)){
 
              if(is_cli()){
+
+              CLI::write($email->printDebugger(['headers']));
 
                CLI::write('Could not send email to: '.$e['email'], 'light_red');
                CLI::newLine();
 
            }
-
+        
              $updateData = array(
                'attempts'=>$e['attempts']+1,
              );
@@ -122,11 +135,10 @@ class EmailQueue{
 
          $queue->update($e['id'],$updateData);
 
-          if(is_cli()){
-            CLI::showProgress($currStep++, $totalSteps);
-        }
 
        }
+
+       //CLI::showProgress(false);
 
        return $success;
 

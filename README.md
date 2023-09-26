@@ -55,13 +55,14 @@ Whenever you need to send an email, use the EmailQueue model to create
 and queue a new one by storing the correct data:
 
     use EmailQueue\EmailQueue;
-    EmailQueue::enqueue($to, $subject, $data);
+    EmailQueue::enqueue($to, $subject, $attachments, $data);
 
 `enqueue` method receives 3 arguments:
 
 - First argument is a string of email addresses that will be treated as recipients.
 - Second argument is an string with the email subject
-- Third arguments is an array of view variables to be passed to the
+- Third argument is an array of files paths
+- Fourth argument is an array of view variables to be passed to the
   email template
  * `message`: Email's body text/html
  
@@ -80,7 +81,6 @@ you wish to use.
 
 # Todo
 
-- Attachments
 - Priority
 - BCC,CC
 

@@ -32,6 +32,9 @@ class CreateQueueTable extends Migration
                 'type'       => 'varchar',
                 'constraint' => 255,
             ],
+            'attachs'       => [
+                'type'       => 'TEXT',
+            ],
             'message'       => [
                 'type'       => 'TEXT',
             ],
